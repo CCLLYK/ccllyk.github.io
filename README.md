@@ -1,9 +1,7 @@
-# HuxBlog Boilerplate
+# Clykton Blog
 
-##### This is the boilerplate of [Hux Blog](https://github.com/Huxpro/huxpro.github.io), all documents is over there!
+我的个人博客，基于 [Hux Blog](https://github.com/Huxpro/huxpro.github.io) 模板搭建，部署在 GitHub Pages 上。
 
-#### [View Boilerplate &rarr;](https://huxpro.github.io/huxblog-boilerplate/)
+博客地址：https://ccllyk.github.io/
 
-#### [View Live Hux Blog &rarr;](https://huxpro.github.io)
-
-## If you like Hux Blog, Please star [huxpro.github.io repo](https://github.com/Huxpro/huxpro.github.io) instead of this! Thank you!
+感谢原作者 [Hux](https://github.com/Huxpro) 提供这个优秀的模板。
