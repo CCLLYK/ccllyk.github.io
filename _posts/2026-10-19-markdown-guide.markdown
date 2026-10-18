@@ -2,7 +2,7 @@
 layout:     post
 title:      "Markdown 入门笔记：写博客的第一步"
 subtitle:   "给和我一样的 Markdown 新手"
-date:       2026-10-19 12:00:00
+date:       2026-10-18 21:00:00
 author:     "Clykton"
 header-img: "img/post-bg-2015.jpg"
 tags:
