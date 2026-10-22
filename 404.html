@@ -5,13 +5,12 @@ header-img: "img/404-bg.jpg"
 permalink: /404.html
 ---
 
-
 <!-- Page Header -->
 <header class="intro-header" style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-				<div class="site-heading" id="tag-heading">
+				<div class="site-heading">
 					<h1>404</h1>
 					<span class="subheading">{{ page.description }}</span>
 				</div>
@@ -20,6 +19,255 @@ permalink: /404.html
 	</div>
 </header>
 
+<!-- Pixel Run Game -->
+<div class="game-wrapper">
+	<div class="game-box">
+		<canvas id="gameCanvas" width="600" height="250"></canvas>
+		<div class="game-ui">
+			<span class="game-score" id="gameScore">SCORE 0</span>
+			<span class="game-hint" id="gameHint">按 空格 或 点击屏幕 跳跃</span>
+			<button class="game-restart" id="gameRestart" style="display:none;">再试一次</button>
+		</div>
+	</div>
+</div>
+
+<style>
+	.game-wrapper{
+		text-align:center;
+		padding: 10px 0 60px;
+	}
+	.game-box{
+		display:inline-block;
+		background: rgba(0,0,0,0.55);
+		border: 2px solid rgba(255,255,255,0.6);
+		border-radius: 4px;
+		padding: 10px;
+		box-shadow: 0 0 20px rgba(0,0,0,0.4);
+	}
+	.game-box canvas{
+		display:block;
+		max-width:100%;
+		height:auto;
+		cursor:pointer;
+	}
+	.game-ui{
+		display:flex;
+		align-items:center;
+		justify-content:space-between;
+		margin-top:8px;
+		font-family: -apple-system,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB",STHeiti,"Microsoft YaHei",sans-serif;
+	}
+	.game-score{
+		color:#fff;
+		font-size:14px;
+		letter-spacing:1px;
+		font-weight:700;
+	}
+	.game-hint{
+		color:rgba(255,255,255,0.7);
+		font-size:12px;
+	}
+	.game-restart{
+		background:#fff;
+		color:#333;
+		border:none;
+		padding:6px 16px;
+		font-size:13px;
+		font-weight:700;
+		border-radius:2px;
+		cursor:pointer;
+		letter-spacing:1px;
+	}
+	.game-restart:hover{
+		background:#0085a1;
+		color:#fff;
+	}
+	@media (max-width: 480px){
+		.game-hint{ display:none; }
+	}
+</style>
+
 <script>
-	document.body.classList.add('page-fullscreen');
+(function(){
+	var canvas = document.getElementById('gameCanvas');
+	var ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
+
+	var W = 600, H = 250;
+	var GROUND_Y = 215;
+
+	// 玩家（像素小人 10x16）
+	var player = { x: 60, y: GROUND_Y - 16, w: 10, h: 16, vy: 0, onGround: true };
+	var GRAVITY = 0.6;
+	var JUMP_V = -10.5;
+
+	var obstacles = [];
+	var score = 0;
+	var speed = 3;
+	var gameOverFlag = false;
+	var gameStarted = false;
+	var spawnTimer = 0;
+
+	// 像素小人图案（10 列 x 16 行）
+	var sprite = [
+		"....##....",
+		"...####...",
+		"...####...",
+		"..##..##..",
+		"..##..##..",
+		"..######..",
+		"..######..",
+		"...####...",
+		"....##....",
+		"..##..##..",
+		"..##..##..",
+		"..##..##..",
+		".##....##.",
+		".##....##.",
+		"..##..##..",
+		"...####..."
+	];
+
+	function drawPixelSprite(sprite, x, y, color){
+		for(var r=0; r<sprite.length; r++){
+			for(var c=0; c<sprite[r].length; c++){
+				if(sprite[r][c] === '#'){
+					ctx.fillStyle = color;
+					ctx.fillRect(x+c, y+r, 1, 1);
+				}
+			}
+		}
+	}
+
+	function drawGround(){
+		ctx.fillStyle = 'rgba(255,255,255,0.6)';
+		ctx.fillRect(0, GROUND_Y, W, 1);
+		for(var i=0; i<W; i+=8){
+			ctx.fillRect(i, GROUND_Y+4, 2, 2);
+		}
+	}
+
+	function reset(){
+		player.y = GROUND_Y - 16;
+		player.vy = 0;
+		player.onGround = true;
+		obstacles = [];
+		score = 0;
+		speed = 3;
+		gameOverFlag = false;
+		gameStarted = true;
+		spawnTimer = 0;
+		document.getElementById('gameRestart').style.display = 'none';
+		document.getElementById('gameHint').textContent = '按 空格 或 点击屏幕 跳跃';
+		document.getElementById('gameScore').textContent = 'SCORE 0';
+	}
+
+	function jump(){
+		if(gameOverFlag) return;
+		if(!gameStarted){
+			gameStarted = true;
+		}
+		if(player.onGround){
+			player.vy = JUMP_V;
+			player.onGround = false;
+		}
+	}
+
+	function spawnObstacle(){
+		var h = 20 + Math.floor(Math.random() * 20);
+		obstacles.push({ x: W, y: GROUND_Y - h, w: 12, h: h });
+	}
+
+	function update(){
+		if(!gameStarted || gameOverFlag) return;
+
+		// 玩家物理
+		player.vy += GRAVITY;
+		player.y += player.vy;
+		if(player.y >= GROUND_Y - 16){
+			player.y = GROUND_Y - 16;
+			player.vy = 0;
+			player.onGround = true;
+		}
+
+		// 生成障碍物
+		spawnTimer--;
+		if(spawnTimer <= 0){
+			spawnObstacle();
+			spawnTimer = 50 + Math.floor(Math.random() * 30);
+		}
+
+		// 移动障碍物并计分
+		for(var i=obstacles.length-1; i>=0; i--){
+			obstacles[i].x -= speed;
+			if(obstacles[i].x + obstacles[i].w < 0){
+				obstacles.splice(i,1);
+				score++;
+			}
+		}
+
+		// 碰撞检测
+		for(var j=0; j<obstacles.length; j++){
+			var o = obstacles[j];
+			if(player.x + player.w > o.x && player.x < o.x + o.w &&
+			   player.y + player.h > o.y){
+				gameOverFlag = true;
+				document.getElementById('gameRestart').style.display = 'inline-block';
+				document.getElementById('gameHint').textContent = '撞车了！得分 ' + score;
+				return;
+			}
+		}
+
+		// 难度递增
+		speed = 3 + Math.floor(score / 10) * 0.5;
+		document.getElementById('gameScore').textContent = 'SCORE ' + score;
+	}
+
+	function draw(){
+		ctx.clearRect(0, 0, W, H);
+		drawGround();
+		// 障碍物
+		for(var i=0; i<obstacles.length; i++){
+			var o = obstacles[i];
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(o.x, o.y, o.w, o.h);
+			ctx.fillStyle = '#0085a1';
+			ctx.fillRect(o.x, o.y, o.w, 2);
+		}
+		// 玩家
+		drawPixelSprite(sprite, Math.round(player.x), Math.round(player.y), '#fff');
+	}
+
+	function loop(){
+		update();
+		draw();
+		requestAnimationFrame(loop);
+	}
+
+	// 输入：空格 / 上键 / 点击 / 触摸
+	document.addEventListener('keydown', function(e){
+		if(e.code === 'Space' || e.code === 'ArrowUp'){
+			e.preventDefault();
+			jump();
+		}
+	});
+	canvas.addEventListener('mousedown', function(e){
+		e.preventDefault();
+		jump();
+	});
+	canvas.addEventListener('touchstart', function(e){
+		e.preventDefault();
+		jump();
+	});
+	document.getElementById('gameRestart').addEventListener('click', function(){
+		reset();
+	});
+
+	// 初始画面
+	drawGround();
+	drawPixelSprite(sprite, player.x, player.y, '#fff');
+	document.getElementById('gameScore').textContent = 'SCORE 0';
+
+	requestAnimationFrame(loop);
+})();
 </script>
