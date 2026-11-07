@@ -46,26 +46,6 @@ kramdown:
 
 
 
-# Disqus settings
-#disqus_username: _your_disqus_short_name_
-
-# Duoshuo settings
-# duoshuo_username: huxblog
-# Share component is depend on Comment so we can NOT use share only.
-# duoshuo_share: true                     # set to false if you want to use Comment without Sharing
-
-
-
-
-# Analytics settings
-# Baidu Analytics
-# ba_track_id: 4cc1f2d8f3067386cc5cdb626a202900
-# Google Analytics
-# ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
-# ga_domain: huxpro.github.io
-
-
-
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "很厉害的coder好像都会写blog,感觉应该装模作样开始学习一下写点什么"
@@ -80,17 +60,7 @@ featured-condition-size: 1              # A tag will be featured if the size of 
 
 
 # Friends
-#friends: [
-#    {
-#        title: "Hux Blog",
-#        href: "https://huxpro.github.io"
-#    },{
-#        title: "Foo",
-#        href: "#"
-#    },{
-#        title: "Bar",
-#        href: "#"
-#    },{
+#friends: [{
 #        title: "Example Friends",
 #        href: "#"
 #    },{
