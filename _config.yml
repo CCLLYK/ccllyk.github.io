@@ -48,7 +48,7 @@ kramdown:
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "很厉害的coder好像都会写blog,感觉应该装模作样开始学习一下写点什么"
+sidebar-about-description: "感觉应该开始装模作样写点什么"
 sidebar-avatar: /img/avatar-clyk.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
