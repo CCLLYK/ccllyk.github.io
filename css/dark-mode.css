@@ -2,6 +2,7 @@
 
 /* Color Variables - Light Theme (Default) */
 :root {
+    color-scheme: light;
     --bg-color: #ffffff;
     --text-color: #404040;
     --heading-color: #2c3e50;
@@ -35,10 +36,12 @@
     --sidebar-tag-border: #bfbfbf;
     --mobile-menu-bg: #ffffff;
     --mobile-menu-text: #777777;
+    --control-border: #cccccc;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
+    color-scheme: dark;
     --bg-color: #1a1a1a;
     --text-color: #d0d0d0;
     --heading-color: #e0e0e0;
@@ -72,6 +75,7 @@
     --sidebar-tag-border: #4a4a4a;
     --mobile-menu-bg: #242424;
     --mobile-menu-text: #d0d0d0;
+    --control-border: #4a4a4a;
 }
 
 /* Apply Theme Variables */
@@ -355,6 +359,19 @@ footer {
 }
 
 /* ============================================================
+   表单控件
+   主样式表在 ≤768px 把 select 写死为白底白边，color-scheme 覆盖不了
+   显式背景，这里补一条暗色规则（关于页的语言切换框）
+   ============================================================ */
+[data-theme="dark"] select,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+    background-color: var(--sidebar-bg);
+    color: var(--text-color);
+    border-color: var(--control-border);
+}
+
+/* ============================================================
    移动端下拉菜单
    主样式表把折叠面板背景写死为 white，暗色下会弹出一块白板
    ============================================================ */
@@ -522,4 +539,66 @@ footer {
 
 [data-theme="dark"] .highlight .hll {
     background-color: rgba(187, 128, 9, 0.15);
+}
+
+/* ============================================================
+   打印：无论当前主题，一律回落到白底黑字
+   暗色主题直接打印会得到满页黑底，语法高亮 token 也是浅色，
+   在纸面上既费墨又看不清。
+   ============================================================ */
+@media print {
+    :root,
+    [data-theme="dark"] {
+        color-scheme: light;
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --heading-color: #000000;
+        --link-color: #000000;
+        --link-hover-color: #000000;
+        --sidebar-bg: #ffffff;
+        --sidebar-text: #333333;
+        --sidebar-heading: #333333;
+        --footer-bg: #ffffff;
+        --footer-text: #333333;
+        --blockquote-border: #cccccc;
+        --code-bg: #f6f6f6;
+        --code-border: #cccccc;
+        --code-text: #000000;
+        --quote-text: #333333;
+        --hr-color: #cccccc;
+        --table-border: #cccccc;
+        --meta-color: #333333;
+        --btn-bg: #ffffff;
+        --btn-text: #000000;
+    }
+
+    body {
+        transition: none;
+    }
+
+    /* 切换按钮打印出来没有意义 */
+    .darkmode-toggle {
+        display: none !important;
+    }
+
+    /* 语法高亮 token 在纸面上不可读，统一回黑字 */
+    .highlight span,
+    .highlight pre,
+    pre,
+    code {
+        color: #000000 !important;
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] img {
+        filter: none;
+        opacity: 1;
+    }
+
+    /* 代码块、引用不要跨页断开 */
+    pre,
+    .highlight,
+    blockquote {
+        page-break-inside: avoid;
+    }
 }

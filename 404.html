@@ -69,6 +69,19 @@ permalink: /404.html
 	@media (max-width: 480px){
 		.game-hint{ display:none; }
 	}
+	/* 小屏上导航栏是绝对定位，会给游戏框留出空间，避免站点名压在画面上 */
+	@media (max-width: 767px){
+		.game-wrapper{ padding-top: 76px; }
+	}
+	/* 本页没有头图，导航栏直接压在页面底色上：
+	   默认的白色文字/图标在浅色主题下不可见，改为跟随主题色 */
+	.navbar-custom .navbar-brand,
+	.navbar-custom .nav li a{
+		color: var(--heading-color);
+	}
+	.navbar-default .navbar-toggle .icon-bar{
+		background-color: var(--heading-color);
+	}
 </style>
 
 <script>

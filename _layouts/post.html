@@ -132,5 +132,11 @@ layout: default
             margin-top : -0.1em;
         }
     }
+    /* 小屏没有左侧留白可放锚点，内联的 "#" 会挤在标题后面，直接隐藏 */
+    @media all and (max-width: 799px) {
+        .anchorjs-link{
+            display: none;
+        }
+    }
 </style>
 {% endif %}

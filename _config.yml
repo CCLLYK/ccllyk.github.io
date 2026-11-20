@@ -62,7 +62,8 @@ featured-condition-size: 1              # A tag will be featured if the size of 
 # Dark Mode settings
 darkmode:
   enable: true                          # whether to enable dark mode
-  default: light                        # initial theme: light / dark (manual toggle only)
+  default: light                        # fallback theme: light / dark (used when the OS has no preference)
+  follow-system: true                   # first visit follows the OS prefers-color-scheme setting
   position: bottom-right                # toggle button position: bottom-right / bottom-left / top-right / top-left
 
 

@@ -20,13 +20,23 @@
         toggleIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
 
-    function applyTheme(theme) {
+    function applyTheme(theme, persist) {
         htmlEl.setAttribute('data-theme', theme);
         syncIcon(theme);
-        try {
-            localStorage.setItem('theme', theme);
-        } catch (e) {
-            /* storage unavailable: theme still applies for this page view */
+        toggleBtn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+
+        // keep the mobile browser chrome in sync with the page
+        var meta = document.getElementById('themeColorMeta');
+        if (meta) {
+            meta.setAttribute('content', theme === 'dark' ? '#1a1a1a' : '#ffffff');
+        }
+
+        if (persist !== false) {
+            try {
+                localStorage.setItem('theme', theme);
+            } catch (e) {
+                /* storage unavailable: theme still applies for this page view */
+            }
         }
         // 通知需要按主题重绘的组件（例如标签云，颜色是 JS 内联写死的）
         try {
@@ -37,6 +47,7 @@
     }
 
     syncIcon(currentTheme());
+    toggleBtn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false');
 
     // Toggle on click
     toggleBtn.addEventListener('click', function() {
@@ -50,6 +61,25 @@
             applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
         }
     });
+
+    // Follow OS changes only while the user has not made an explicit choice
+    var followSystem = {{ site.darkmode.follow-system | default: true }};
+    if (followSystem && window.matchMedia) {
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        var onSystemChange = function (e) {
+            var stored = null;
+            try {
+                stored = localStorage.getItem('theme');
+            } catch (err) { }
+            if (stored === 'dark' || stored === 'light') return;
+            applyTheme(e.matches ? 'dark' : 'light', false);
+        };
+        if (mq.addEventListener) {
+            mq.addEventListener('change', onSystemChange);
+        } else if (mq.addListener) {
+            mq.addListener(onSystemChange);
+        }
+    }
 })();
 </script>
 {% endif %}
