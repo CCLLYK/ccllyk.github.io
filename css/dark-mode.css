@@ -22,6 +22,19 @@
     --btn-bg: #f5f5f5;
     --btn-text: #333;
     --meta-color: gray;
+    --code-border: #cccccc;
+    --code-text: #333333;
+    --quote-text: #808080;
+    --hr-color: #eeeeee;
+    --table-border: #eeeeee;
+    --tagcloud-start: #dbe7ff;
+    --tagcloud-end: #b9e3f0;
+    --tagcloud-text: #1f3d52;
+    --tagcloud-hover-bg: #0085a1;
+    --tagcloud-hover-text: #ffffff;
+    --sidebar-tag-border: #bfbfbf;
+    --mobile-menu-bg: #ffffff;
+    --mobile-menu-text: #777777;
 }
 
 /* Dark Theme */
@@ -46,6 +59,19 @@
     --btn-bg: #333;
     --btn-text: #ddd;
     --meta-color: #999;
+    --code-border: #3d3d3d;
+    --code-text: #d8d8d8;
+    --quote-text: #a8a8a8;
+    --hr-color: #3a3a3a;
+    --table-border: #3d3d3d;
+    --tagcloud-start: #22303b;
+    --tagcloud-end: #0e5566;
+    --tagcloud-text: #d6e9f3;
+    --tagcloud-hover-bg: #85c1e9;
+    --tagcloud-hover-text: #10222b;
+    --sidebar-tag-border: #4a4a4a;
+    --mobile-menu-bg: #242424;
+    --mobile-menu-text: #d0d0d0;
 }
 
 /* Apply Theme Variables */
@@ -80,6 +106,29 @@ a:hover, a:focus {
     color: var(--link-hover-color);
 }
 
+/* 正文/页脚链接：主样式表用了更高优先级的选择器，这里需同等优先级覆盖 */
+.post-container a {
+    color: var(--link-color);
+}
+
+.post-container a:hover,
+.post-container a:focus {
+    color: var(--link-hover-color);
+}
+
+footer .copyright a {
+    color: var(--link-color);
+}
+
+footer .copyright a:hover,
+footer .copyright a:focus {
+    color: var(--link-hover-color);
+}
+
+.post-preview > .post-meta > a {
+    color: var(--text-color);
+}
+
 .sidebar-container {
     background-color: var(--sidebar-bg);
     color: var(--sidebar-text);
@@ -94,8 +143,9 @@ a:hover, a:focus {
 }
 
 .sidebar-container .tags a {
-    border-color: var(--tag-bg);
-    color: var(--tag-text);
+    /* 文字色由主样式表的 .sidebar-container a{color:...!important} 决定，
+       这里只接管描边，避免亮色模式下出现白描边 */
+    border-color: var(--sidebar-tag-border);
 }
 
 .tags a:hover, .tags a:active {
@@ -107,14 +157,35 @@ a:hover, a:focus {
     color: var(--meta-color);
 }
 
-.blockquote {
-    color: var(--sidebar-text);
+blockquote, .blockquote {
+    color: var(--quote-text);
     border-left-color: var(--blockquote-border);
 }
 
 pre, code {
     background-color: var(--code-bg);
-    color: var(--text-color);
+    color: var(--code-text);
+}
+
+/* 代码块：.highlight pre 的优先级(0,1,1)高于 pre(0,0,1)，
+   必须用同样的选择器才能覆盖 syntax.css 的亮色底色 */
+.highlight pre,
+pre.highlight {
+    background-color: var(--code-bg);
+    border-color: var(--code-border);
+}
+
+.highlight {
+    background-color: transparent;
+}
+
+hr {
+    border-top-color: var(--hr-color);
+}
+
+.table th,
+.table td {
+    border-color: var(--table-border) !important;
 }
 
 /* Fix navbar width - remove all side gaps */
@@ -189,19 +260,27 @@ footer {
     color: #fff;
 }
 
-/* Position Variations */
-.bottom-left .darkmode-toggle {
+/* Position Variations
+   位置类由模板加在按钮自身上（class="darkmode-toggle position-xxx"），
+   这里必须匹配自身类名；默认（未加类）即 bottom-right。 */
+.darkmode-toggle.position-bottom-right {
+    bottom: 30px;
+    right: 30px;
+}
+
+.darkmode-toggle.position-bottom-left {
     right: auto;
     left: 30px;
 }
 
-.top-right .darkmode-toggle {
+.darkmode-toggle.position-top-right {
     bottom: auto;
     top: 30px;
 }
 
-.top-left .darkmode-toggle {
+.darkmode-toggle.position-top-left {
     bottom: auto;
+    top: 30px;
     left: 30px;
     right: auto;
 }
@@ -221,13 +300,11 @@ footer {
     color: #fff;
 }
 
-/* Image adjustments for dark mode */
-img {
+/* Image adjustments for dark mode
+   注意：不能把 opacity 写成全局 img 规则，否则亮色模式下所有图片也会被压暗 10% */
+[data-theme="dark"] img {
     opacity: 0.9;
     transition: opacity 0.3s ease;
-}
-
-[data-theme="dark"] img {
     filter: brightness(0.9);
 }
 
@@ -244,4 +321,205 @@ img {
         height: 36px;
         font-size: 16px;
     }
+
+    .darkmode-toggle.position-bottom-left {
+        left: 15px;
+    }
+
+    .darkmode-toggle.position-top-right {
+        top: 15px;
+    }
+
+    .darkmode-toggle.position-top-left {
+        top: 15px;
+        left: 15px;
+    }
+}
+
+/* ============================================================
+   标签云（/tags/ 页）
+   jquery.tagcloud.js 会给每个标签写内联 background-color，
+   底色由 footer.html 按主题传入，文字色与 hover 色在这里接管。
+   ============================================================ */
+#tag_cloud a,
+#tag_cloud .tag {
+    color: var(--tagcloud-text);
+}
+
+#tag_cloud a:hover,
+#tag_cloud .tag:hover,
+#tag_cloud a:active,
+#tag_cloud .tag:active {
+    background-color: var(--tagcloud-hover-bg) !important;
+    color: var(--tagcloud-hover-text);
+}
+
+/* ============================================================
+   移动端下拉菜单
+   主样式表把折叠面板背景写死为 white，暗色下会弹出一块白板
+   ============================================================ */
+@media only screen and (max-width: 767px) {
+    .navbar-default .navbar-collapse {
+        background-color: var(--mobile-menu-bg);
+    }
+
+    .navbar-default .navbar-nav > li > a {
+        color: var(--mobile-menu-text);
+    }
+
+    .navbar-default .navbar-nav > li > a:hover,
+    .navbar-default .navbar-nav > li > a:focus {
+        color: var(--link-hover-color);
+    }
+
+    #ccllyk_navbar.in .navbar-nav > li > a:active {
+        background-color: rgba(128, 128, 128, 0.2);
+    }
+}
+
+/* ============================================================
+   代码高亮：暗色配色
+   syntax.css 是 GitHub 亮色主题，token 颜色在深底上不可读
+   （#333333 约 1.2:1，#445588 约 1.9:1，#dd1144 约 2.8:1），
+   这里整套替换为暗色 token 配色。
+   ============================================================ */
+[data-theme="dark"] .highlight pre,
+[data-theme="dark"] pre.highlight {
+    background-color: #2d2d2d;
+    border-color: #3d3d3d;
+}
+
+[data-theme="dark"] .highlight {
+    color: #d8d8d8;
+}
+
+/* 注释 */
+[data-theme="dark"] .highlight .c,
+[data-theme="dark"] .highlight .cm,
+[data-theme="dark"] .highlight .c1,
+[data-theme="dark"] .highlight .cs,
+[data-theme="dark"] .highlight .cp,
+[data-theme="dark"] .highlight .ch,
+[data-theme="dark"] .highlight .gh,
+[data-theme="dark"] .highlight .go,
+[data-theme="dark"] .highlight .gp,
+[data-theme="dark"] .highlight .bp {
+    color: #8b949e;
+}
+
+/* 关键字 / 运算符 */
+[data-theme="dark"] .highlight .k,
+[data-theme="dark"] .highlight .kc,
+[data-theme="dark"] .highlight .kd,
+[data-theme="dark"] .highlight .kn,
+[data-theme="dark"] .highlight .kp,
+[data-theme="dark"] .highlight .kr,
+[data-theme="dark"] .highlight .kt,
+[data-theme="dark"] .highlight .o,
+[data-theme="dark"] .highlight .ow,
+[data-theme="dark"] .highlight .ne {
+    color: #ff7b72;
+}
+
+/* 名称：普通标识符、命名空间、变量、属性 */
+[data-theme="dark"] .highlight .n,
+[data-theme="dark"] .highlight .nl,
+[data-theme="dark"] .highlight .nx {
+    color: #d8d8d8;
+}
+
+[data-theme="dark"] .highlight .na,
+[data-theme="dark"] .highlight .nv,
+[data-theme="dark"] .highlight .nb,
+[data-theme="dark"] .highlight .nn,
+[data-theme="dark"] .highlight .nc {
+    color: #ffa657;
+}
+
+[data-theme="dark"] .highlight .ni {
+    color: #d2a8ff;
+}
+
+[data-theme="dark"] .highlight .nf,
+[data-theme="dark"] .highlight .fm,
+[data-theme="dark"] .highlight .gu {
+    color: #d2a8ff;
+}
+
+[data-theme="dark"] .highlight .nt {
+    color: #7ee787;
+}
+
+/* 数字 */
+[data-theme="dark"] .highlight .m,
+[data-theme="dark"] .highlight .mf,
+[data-theme="dark"] .highlight .mh,
+[data-theme="dark"] .highlight .mi,
+[data-theme="dark"] .highlight .mo,
+[data-theme="dark"] .highlight .il,
+[data-theme="dark"] .highlight .no {
+    color: #79c0ff;
+}
+
+/* 字符串 / 正则 */
+[data-theme="dark"] .highlight .s,
+[data-theme="dark"] .highlight .s1,
+[data-theme="dark"] .highlight .s2,
+[data-theme="dark"] .highlight .sb,
+[data-theme="dark"] .highlight .sc,
+[data-theme="dark"] .highlight .sd,
+[data-theme="dark"] .highlight .sh,
+[data-theme="dark"] .highlight .si,
+[data-theme="dark"] .highlight .sx,
+[data-theme="dark"] .highlight .ss {
+    color: #a5d6ff;
+}
+
+[data-theme="dark"] .highlight .se {
+    color: #79c0ff;
+}
+
+[data-theme="dark"] .highlight .sr {
+    color: #7ee787;
+}
+
+/* 错误、diff、其他 */
+[data-theme="dark"] .highlight .err,
+[data-theme="dark"] .highlight .gr,
+[data-theme="dark"] .highlight .gt {
+    color: #f85149;
+    background-color: transparent;
+}
+
+[data-theme="dark"] .highlight .gd {
+    color: #ffa198;
+    background-color: rgba(248, 81, 73, 0.12);
+}
+
+[data-theme="dark"] .highlight .gd .x {
+    color: #ffa198;
+    background-color: rgba(248, 81, 73, 0.2);
+}
+
+[data-theme="dark"] .highlight .gi {
+    color: #7ee787;
+    background-color: rgba(46, 160, 67, 0.12);
+}
+
+[data-theme="dark"] .highlight .gi .x {
+    color: #7ee787;
+    background-color: rgba(46, 160, 67, 0.2);
+}
+
+[data-theme="dark"] .highlight .gc {
+    color: #8b949e;
+    background-color: transparent;
+}
+
+[data-theme="dark"] .highlight .w {
+    color: #484f58;
+}
+
+[data-theme="dark"] .highlight .hll {
+    background-color: rgba(187, 128, 9, 0.15);
 }

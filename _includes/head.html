@@ -11,6 +11,21 @@
 
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 
+    <!-- Theme init: must run synchronously before any CSS is applied,
+         otherwise the page paints in light theme first and then flips (FOUC). -->
+    {% if site.darkmode.enable %}
+    <script>
+    (function () {
+        try {
+            var theme = localStorage.getItem('theme') || '{{ site.darkmode.default }}';
+            document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+            document.documentElement.setAttribute('data-theme', '{{ site.darkmode.default }}');
+        }
+    })();
+    </script>
+    {% endif %}
+
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="{{ "/css/bootstrap.min.css" | prepend: site.baseurl }}">
 

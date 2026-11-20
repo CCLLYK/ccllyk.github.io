@@ -122,15 +122,34 @@
 <!-- jquery.tagcloud.js -->
 <script>
     // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
-        async("/js/jquery.tagcloud.js",function(){
+    (function () {
+        if ($('#tag_cloud').length === 0) return;
+
+        // 标签云的底色随主题变化，取值统一来自 css/dark-mode.css 的变量
+        function cssVar(name, fallback) {
+            var value = getComputedStyle(document.documentElement).getPropertyValue(name);
+            return (value || '').trim() || fallback;
+        }
+
+        function renderTagCloud() {
+            if ($('#tag_cloud a').length === 0) return;
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
+                color: {
+                    start: cssVar('--tagcloud-start', '#dbe7ff'),
+                    end: cssVar('--tagcloud-end', '#b9e3f0')
+                }
             };
             $('#tag_cloud a').tagcloud();
-        })
-    }
+        }
+
+        async("/js/jquery.tagcloud.js", function () {
+            renderTagCloud();
+        });
+
+        // 切换明暗主题后重新上色（插件是把颜色写成内联样式的）
+        document.addEventListener('themechange', renderTagCloud);
+    })();
 </script>
 
 <!-- Google Analytics -->
