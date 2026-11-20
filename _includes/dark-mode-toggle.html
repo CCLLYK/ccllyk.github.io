@@ -1,0 +1,42 @@
+<!-- Dark Mode Toggle Button -->
+{% if site.darkmode.enable %}
+<button id="darkModeToggle" class="darkmode-toggle {% if site.darkmode.position == 'bottom-left' %}position-bottom-left{% elsif site.darkmode.position == 'top-right' %}position-top-right{% elsif site.darkmode.position == 'top-left' %}position-top-left{% endif %}" title="切换明暗主题">
+    <span id="toggleIcon">🌙</span>
+</button>
+
+<script>
+(function() {
+    var toggleBtn = document.getElementById('darkModeToggle');
+    var toggleIcon = document.getElementById('toggleIcon');
+    var htmlEl = document.documentElement;
+
+    // Get saved theme or default to light
+    var savedTheme = localStorage.getItem('theme') || '{{ site.darkmode.default }}';
+
+    // Apply theme without animation delay
+    function applyTheme(theme) {
+        htmlEl.setAttribute('data-theme', theme);
+        toggleIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('theme', theme);
+    }
+
+    // Initialize on page load (before render to prevent flash)
+    applyTheme(savedTheme);
+
+    // Toggle on click
+    toggleBtn.addEventListener('click', function() {
+        var current = htmlEl.getAttribute('data-theme');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // Keyboard shortcut: Alt+D to toggle
+    document.addEventListener('keydown', function(e) {
+        if (e.altKey && e.key === 'd') {
+            e.preventDefault();
+            var current = htmlEl.getAttribute('data-theme');
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+    });
+})();
+</script>
+{% endif %}

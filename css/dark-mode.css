@@ -1,0 +1,247 @@
+/* Dark Mode Styles for Clykton Blog */
+
+/* Color Variables - Light Theme (Default) */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #404040;
+    --heading-color: #2c3e50;
+    --link-color: #337ab7;
+    --link-hover-color: #0085a1;
+    --sidebar-bg: #f8f8f8;
+    --sidebar-text: #bfbfbf;
+    --sidebar-heading: gray;
+    --tag-bg: rgba(255, 255, 255, 0.8);
+    --tag-text: #fff;
+    --footer-bg: #f8f8f8;
+    --footer-text: #999;
+    --blockquote-border: #eee;
+    --code-bg: #f9f9f9;
+    --nav-bg-scroll: rgba(255, 255, 255, 0.9);
+    --toggle-bg: rgba(0, 0, 0, 0.15);
+    --toggle-text: #666;
+    --btn-bg: #f5f5f5;
+    --btn-text: #333;
+    --meta-color: gray;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #d0d0d0;
+    --heading-color: #e0e0e0;
+    --link-color: #5dade2;
+    --link-hover-color: #85c1e9;
+    --sidebar-bg: #2c2c2c;
+    --sidebar-text: #aaa;
+    --sidebar-heading: #bbb;
+    --tag-bg: rgba(255, 255, 255, 0.15);
+    --tag-text: #eee;
+    --footer-bg: #2c2c2c;
+    --footer-text: #888;
+    --blockquote-border: #444;
+    --code-bg: #2d2d2d;
+    --nav-bg-scroll: rgba(44, 44, 44, 0.95);
+    --toggle-bg: rgba(255, 255, 255, 0.1);
+    --toggle-text: #ccc;
+    --btn-bg: #333;
+    --btn-text: #ddd;
+    --meta-color: #999;
+}
+
+/* Apply Theme Variables */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+}
+
+/* Hero 区域标题保持白色（覆盖默认主题色） */
+.intro-header .site-heading,
+.intro-header .post-heading,
+.intro-header .page-heading,
+.intro-header .site-heading h1,
+.intro-header .post-heading h1,
+.intro-header .page-heading h1,
+.intro-header .site-heading .subheading,
+.intro-header .post-heading .subheading,
+.intro-header .page-heading .subheading {
+    color: #fff !important;
+}
+
+a {
+    color: var(--link-color);
+}
+
+a:hover, a:focus {
+    color: var(--link-hover-color);
+}
+
+.sidebar-container {
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+}
+
+.sidebar-container h5 {
+    color: var(--sidebar-heading);
+}
+
+.sidebar-container h5 a {
+    color: var(--sidebar-heading);
+}
+
+.sidebar-container .tags a {
+    border-color: var(--tag-bg);
+    color: var(--tag-text);
+}
+
+.tags a:hover, .tags a:active {
+    border-color: var(--link-hover-color);
+    background-color: var(--link-hover-color);
+}
+
+.post-meta {
+    color: var(--meta-color);
+}
+
+.blockquote {
+    color: var(--sidebar-text);
+    border-left-color: var(--blockquote-border);
+}
+
+pre, code {
+    background-color: var(--code-bg);
+    color: var(--text-color);
+}
+
+/* Fix navbar width - remove all side gaps */
+.navbar-custom {
+    margin-bottom: 0 !important;
+}
+
+.navbar-custom .container-fluid {
+    margin-right: 0 !important;
+    margin-left: 20px !important; /* Add left margin to prevent brand from touching edge */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: calc(100% - 20px) !important; /* Adjust width for the margin */
+}
+
+.navbar-custom .nav {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Navbar scroll behavior - original hide/show logic */
+.navbar-custom.is-fixed {
+    position: fixed !important;
+    /* Let JS control top positioning for slide-in/out effect */
+}
+
+/* Dark mode scroll behavior */
+[data-theme="dark"] .navbar-custom.is-fixed {
+    background-color: rgba(30, 30, 30, 0.95) !important;
+    border-bottom: 1px solid #444 !important;
+}
+
+[data-theme="dark"] .navbar-custom.is-fixed .navbar-brand,
+[data-theme="dark"] .navbar-custom.is-fixed .nav li a {
+    color: #fff !important;
+}
+
+[data-theme="dark"] .navbar-custom.is-fixed .navbar-brand:hover,
+[data-theme="dark"] .navbar-custom.is-fixed .navbar-brand:focus,
+[data-theme="dark"] .navbar-custom.is-fixed .nav li a:hover,
+[data-theme="dark"] .navbar-custom.is-fixed .nav li a:focus {
+    color: var(--link-hover-color) !important;
+}
+
+/* Footer */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+}
+
+/* Toggle Button */
+.darkmode-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--toggle-bg);
+    color: var(--toggle-text);
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 9999;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.darkmode-toggle:hover {
+    transform: scale(1.1);
+    background-color: var(--link-hover-color);
+    color: #fff;
+}
+
+/* Position Variations */
+.bottom-left .darkmode-toggle {
+    right: auto;
+    left: 30px;
+}
+
+.top-right .darkmode-toggle {
+    bottom: auto;
+    top: 30px;
+}
+
+.top-left .darkmode-toggle {
+    bottom: auto;
+    left: 30px;
+    right: auto;
+}
+
+/* Post Container Adjustments */
+.post-container {
+    background-color: var(--bg-color);
+}
+
+.pager li > a, .pager li > span {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+}
+
+.pager li > a:hover {
+    background-color: var(--link-hover-color);
+    color: #fff;
+}
+
+/* Image adjustments for dark mode */
+img {
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+[data-theme="dark"] img {
+    filter: brightness(0.9);
+}
+
+[data-theme="dark"] img:hover {
+    filter: brightness(1);
+}
+
+/* Hide toggle button on small screens if needed */
+@media screen and (max-width: 480px) {
+    .darkmode-toggle {
+        bottom: 15px;
+        right: 15px;
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
